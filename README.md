@@ -2,7 +2,7 @@
 
 AI Cloud Cost Optimizer is a local hackathon demonstration of cloud cost analysis and approval-based optimization. It uses a simulated cloud-resource layer, a FastAPI backend, an Angular dashboard, and SQLite persistence. It does not connect to AWS, Azure, GCP, or real production infrastructure.
 
-Repository: https://github.com/Rishi345683/lastbutone
+Repository: https://github.com/Rishi345683/finalifworkout
 
 ## What The Demo Shows
 
@@ -51,17 +51,22 @@ postman/
 
 ## Run Locally
 
-Install backend dependencies from the project root:
+Prerequisites:
+
+- Python 3.10 (recommended for this project)
+- Node.js and npm
+
+Install backend dependencies:
 
 ```powershell
 cd backend
-python -m pip install -r requirements.txt
+py -3.10 -m pip install -r requirements.txt
 ```
 
 Start the backend:
 
 ```powershell
-python -m uvicorn app.main:app --reload
+py -3.10 -m uvicorn app.main:app --reload
 ```
 
 The backend runs at `http://127.0.0.1:8000`.
@@ -112,14 +117,12 @@ Restart the backend after changing environment variables. The background monitor
 	 - Approval window
 	 - Estimated monthly savings
 6. Click **Approve** on one recommendation.
-7. The card shows the planned resize, for example `8 vCPU / 32 GB RAM -> 4 vCPU / 16 GB RAM`.
-8. Click **Execute simulation**.
-9. Refresh the inventory and show the updated vCPU, RAM, and monthly cost.
-10. Open **Recent Audit** and select **View resize details**.
-11. Restart the backend for the automatic path.
-12. Leave the new recommendations untouched.
-13. After their deadlines expire, the monitor automatically approves and executes them.
-14. Show the automatic audit message, health-check result, and before/after resize values.
+7. Approval immediately runs the simulated health check and resize.
+8. Refreshing the inventory shows the updated vCPU, RAM, and monthly cost.
+9. Open **Recent Activity** and select **View details**.
+10. Leave a new recommendation untouched for the automatic path.
+11. After its deadline expires, the monitor automatically approves and executes it.
+12. Show the automatic audit message and before/after resize values.
 
 The **Healthy resources** card is clickable. It opens a detail panel showing each resource's utilization, cost, idle time, criticality, and why no immediate optimization was suggested.
 
@@ -167,7 +170,7 @@ The AI component summarizes findings only. It cannot approve, execute, or modify
 - Production-resource changes are blocked.
 - Non-production execution runs a health check.
 - Failed health checks restore the original simulated VM state.
-- Manual approval does not execute a resize by itself.
+- Manual approval immediately runs the same safety and health checks as automatic approval.
 - Automatic approval runs the same safety and health checks.
 - All decisions and executions are recorded in SQLite audit logs.
 
@@ -177,7 +180,7 @@ Run all backend tests:
 
 ```powershell
 cd backend
-python -m unittest discover -s tests -p "test_*.py" -v
+py -3.10 -m unittest discover -s tests -p "test_*.py" -v
 ```
 
 The suite covers:
