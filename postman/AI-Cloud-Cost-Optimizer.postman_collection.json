@@ -1,0 +1,85 @@
+{
+  "info": {
+    "name": "AI Cloud Cost Optimizer",
+    "description": "Local-only API workflow for the simulated cloud cost optimizer.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://127.0.0.1:8000"
+    },
+    {
+      "key": "recommendationId",
+      "value": "rec-001"
+    }
+  ],
+  "item": [
+    {
+      "name": "Health check",
+      "request": {
+        "method": "GET",
+        "url": "{{baseUrl}}/"
+      }
+    },
+    {
+      "name": "List simulated resources",
+      "request": {
+        "method": "GET",
+        "url": "{{baseUrl}}/resources"
+      }
+    },
+    {
+      "name": "Get utilization analysis",
+      "request": {
+        "method": "GET",
+        "url": "{{baseUrl}}/analysis"
+      }
+    },
+    {
+      "name": "Get AI summary",
+      "request": {
+        "method": "GET",
+        "url": "{{baseUrl}}/agent/summary"
+      }
+    },
+    {
+      "name": "List recommendations",
+      "request": {
+        "method": "GET",
+        "url": "{{baseUrl}}/recommendations"
+      }
+    },
+    {
+      "name": "Approve recommendation",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"note\": \"Approved from Postman demo\"\n}"
+        },
+        "url": "{{baseUrl}}/recommendations/{{recommendationId}}/approve"
+      }
+    },
+    {
+      "name": "Execute approved recommendation",
+      "request": {
+        "method": "POST",
+        "url": "{{baseUrl}}/recommendations/{{recommendationId}}/execute"
+      }
+    },
+    {
+      "name": "View audit logs",
+      "request": {
+        "method": "GET",
+        "url": "{{baseUrl}}/audit-logs"
+      }
+    }
+  ]
+}

@@ -1,0 +1,249 @@
+:host {
+  display: block;
+  min-height: 100vh;
+}
+
+:host * {
+  box-sizing: border-box;
+}
+
+:host main.shell {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+:host .loading-state {
+  min-height: 60vh;
+  display: grid;
+  place-items: center;
+  gap: 1rem;
+  color: #dbeafe;
+  font-weight: 600;
+}
+
+:host .resource-size-inline,
+:host .resource-size-block {
+  display: block;
+  margin-top: 4px;
+  color: #2f7d64;
+  font-weight: 700;
+}
+
+:host .resource-size-block {
+  margin: 12px 0 0;
+  padding: 8px 10px;
+  border-left: 3px solid #2f7d64;
+  background: #edf9f2;
+}
+
+:host .resource-size-block small {
+  display: block;
+  color: #52645d;
+  margin-bottom: 4px;
+}
+
+:host .intro-copy,
+:host .panel-foot,
+:host .stat-note,
+:host .health-panel-header p,
+:host .recommendation p,
+:host .audit-entry small,
+:host .health-resource-row small {
+  line-height: 1.5;
+}
+
+:host .alert,
+:host .success {
+  margin: 0 24px 16px;
+}
+
+:host .content-grid,
+:host .stats-grid,
+:host .intro-row {
+  transition: opacity 0.18s ease;
+}
+
+:host .stat-card-button {
+  width: 100%;
+  border: 0;
+  text-align: left;
+  cursor: pointer;
+}
+
+:host .stat-card-button:hover,
+:host .stat-card-button:focus-visible {
+  outline: 2px solid #2f7d64;
+  outline-offset: 2px;
+}
+
+:host .health-panel {
+  margin: 0 24px 24px;
+  padding: 24px;
+  border: 1px solid #d5ded8;
+  border-radius: 8px;
+  background: #f8fbf8;
+  box-shadow: 0 16px 40px rgb(31 64 52 / 12%);
+}
+
+:host .health-panel-header,
+:host .health-detail-heading {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+:host .health-panel-header h3,
+:host .health-detail h4 {
+  margin: 4px 0;
+}
+
+:host .health-panel-header p:not(.eyebrow),
+:host .health-reason {
+  margin: 8px 0 0;
+  color: #52645d;
+}
+
+:host .panel-close {
+  border: 0;
+  background: transparent;
+  color: #29463b;
+  cursor: pointer;
+  font-size: 1.7rem;
+  line-height: 1;
+}
+
+:host .health-resource-list {
+  display: grid;
+  gap: 8px;
+  margin-top: 20px;
+}
+
+:host .health-resource-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  width: 100%;
+  padding: 14px 16px;
+  border: 1px solid #dce6df;
+  border-radius: 6px;
+  background: #fff;
+  color: #203c32;
+  cursor: pointer;
+  text-align: left;
+}
+
+:host .health-resource-row:hover,
+:host .health-resource-row:focus-visible {
+  border-color: #2f7d64;
+  outline: none;
+}
+
+:host .health-resource-row small,
+:host .health-metrics small {
+  display: block;
+  margin-top: 4px;
+  color: #718079;
+}
+
+:host .health-row-summary {
+  color: #61736b;
+  font-size: 0.82rem;
+}
+
+:host .health-row-summary b {
+  margin-left: 12px;
+  color: #2f7d64;
+}
+
+:host .health-detail {
+  margin-top: 20px;
+  padding: 18px;
+  border: 1px solid #dce6df;
+  border-radius: 6px;
+  background: #fff;
+}
+
+:host .health-metrics {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 16px;
+  margin-top: 20px;
+}
+
+:host .health-metrics strong {
+  display: block;
+  margin-top: 4px;
+}
+
+:host .text-button {
+  margin-top: 20px;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: #2f7d64;
+  cursor: pointer;
+  font: inherit;
+  font-weight: 700;
+}
+
+@media (max-width: 720px) {
+  :host .health-panel {
+    margin: 0 14px 18px;
+    padding: 18px;
+  }
+
+  :host .health-resource-row {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  :host .health-metrics {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+:host .audit-details-button {
+  display: block;
+  margin-top: 6px;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: #2f7d64;
+  cursor: pointer;
+  font: inherit;
+  font-size: 0.75rem;
+  font-weight: 700;
+}
+
+:host .audit-details {
+  display: block;
+  margin-top: 5px;
+  line-height: 1.4;
+}
+
+:host .planned-resize {
+  margin: 10px 0 0;
+  padding: 9px 10px;
+  border-left: 3px solid #d39b42;
+  background: #fff8e9;
+  color: #73521b;
+  font-size: 0.82rem;
+}
+
+:host .recommendation-timing {
+  margin: 10px 0 0;
+  color: #718079;
+  font-size: 0.75rem;
+}
+
+:host .recommendation-timing strong {
+  color: #52645d;
+}
+
+:host .recommendation-timing span {
+  padding: 0 5px;
+  color: #a0ada6;
+}

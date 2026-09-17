@@ -1,0 +1,73 @@
+<main class="shell">
+  <header class="topbar">
+    <div class="brand-lockup"><div class="brand-mark">CO</div><div><p class="eyebrow">CLOUD HEALTH</p><h1>Costopti</h1></div></div>
+    <div class="topbar-actions"><span class="live-dot"><span></span> Live demo</span><button class="refresh-button" type="button" (click)="refresh()" [disabled]="loading()">Refresh</button></div>
+  </header>
+
+  @if (error()) { <section class="alert" role="alert">{{ error() }}</section> }
+  @if (executionMessage()) { <section class="success" role="status">{{ executionMessage() }}</section> }
+  @if (loading()) { <section class="loading-state"><span class="spinner"></span> Loading your cloud health update...</section> }
+  @else {
+    <section class="intro-row"><div><p class="eyebrow accent">OVERVIEW</p><h2>See where money is being wasted.</h2><p class="intro-copy">This dashboard shows which systems are using too little power, where savings may be possible, and what actions need a quick review.</p></div><div class="timestamp">LAST UPDATE<strong>{{ lastUpdated() | date:'shortTime' }}</strong></div></section>
+
+    <section class="stats-grid" aria-label="Cost overview">
+      <article class="stat-card stat-dark"><span class="stat-label">Estimated monthly cost</span><strong>₹{{ totalMonthlyCost() | number:'1.0-0' }}</strong><span class="stat-note">Across {{ resources().length }} systems</span></article>
+      <article class="stat-card"><span class="stat-label">Possible savings</span><strong class="value-green">₹{{ totalSavings() | number:'1.0-0' }}</strong><span class="stat-note">From {{ needsAttentionCount() }} suggested actions</span></article>
+      <article class="stat-card"><span class="stat-label">Needs review</span><strong class="value-amber">{{ needsAttentionCount() }}</strong><span class="stat-note">Waiting for a decision</span></article>
+      <button class="stat-card stat-card-button" type="button" (click)="showHealthyResources()" aria-haspopup="dialog"><span class="stat-label">Healthy systems</span><strong>{{ healthyResourceCount() }}</strong><span class="stat-note">See what is running well</span></button>
+    </section>
+
+    @if (healthyPanelOpen()) {
+      <section class="health-panel" role="dialog" aria-modal="true" aria-labelledby="health-panel-title">
+        <div class="health-panel-header"><div><p class="eyebrow accent">SYSTEM HEALTH</p><h3 id="health-panel-title">Healthy systems</h3><p>These systems are currently running well and do not need action.</p></div><button class="panel-close" type="button" (click)="closeHealthyResources()" aria-label="Close health details">×</button></div>
+        @if (selectedHealthyResource(); as resource) {
+          <div class="health-detail"><div class="health-detail-heading"><div><span class="rec-id">{{ resource.id }}</span><h4>{{ resource.name }}</h4></div><span class="status" [class.status-muted]="resource.status === 'Stopped'"><span></span>{{ resource.status }}</span></div><p class="health-reason">{{ healthReason(resource) }}</p><div class="resource-size-block"><small>Current size</small><strong>{{ resource.vcpus }} vCPU / {{ resource.ram_gb }} GB RAM</strong></div><div class="health-metrics"><div><small>Environment</small><strong>{{ resource.environment }}</strong></div><div><small>CPU use</small><strong>{{ resource.cpu_utilization_percent }}%</strong></div><div><small>RAM use</small><strong>{{ resource.ram_utilization_percent }}%</strong></div><div><small>Disk use</small><strong>{{ resource.disk_utilization_percent }}%</strong></div><div><small>Network use</small><strong>{{ resource.network_utilization_percent }}%</strong></div><div><small>Idle time</small><strong>{{ resource.idle_hours_per_day }}h/day</strong></div><div><small>Monthly cost</small><strong>₹{{ resource.monthly_cost_inr | number:'1.0-0' }}</strong></div><div><small>Priority</small><strong>{{ resource.criticality }}</strong></div></div><button class="text-button" type="button" (click)="selectedHealthyResource.set(null)">Back to healthy systems</button></div>
+        } @else {
+          <div class="health-resource-list">@for (resource of healthyResources(); track resource.id) { <button type="button" class="health-resource-row" (click)="inspectHealthyResource(resource)"><span><strong>{{ resource.name }}</strong><small>{{ resource.id }} · {{ resource.environment }}</small><small class="resource-size-inline">Current size: {{ resource.vcpus }} vCPU / {{ resource.ram_gb }} GB RAM</small></span><span class="health-row-summary">CPU {{ resource.cpu_utilization_percent }}% · RAM {{ resource.ram_utilization_percent }}% <b>View</b></span></button> }</div>
+        }
+      </section>
+    }
+
+    <section class="content-grid">
+      <div class="main-column">
+        <div class="section-heading"><div><p class="eyebrow accent">CURRENT SYSTEMS</p><h3>All virtual machines</h3></div><span class="section-count">{{ resources().length }} total</span></div>
+        <div class="resource-table-wrap"><table><thead><tr><th>System</th><th>Environment</th><th>Usage</th><th>Monthly cost</th><th>Status</th></tr></thead><tbody>
+          @for (resource of resources(); track resource.id) { <tr><td><strong>{{ resource.name }}</strong><small>{{ resource.id }}</small><small class="resource-size-inline">Current size: {{ resource.vcpus }} vCPU / {{ resource.ram_gb }} GB RAM</small></td><td><span class="environment">{{ resource.environment }}</span></td><td><div class="utilization"><span>CPU {{ resource.cpu_utilization_percent }}%</span><span>RAM {{ resource.ram_utilization_percent }}%</span></div><div class="bar"><i [style.width.%]="resource.cpu_utilization_percent"></i></div><small class="idle-time">Idle {{ resource.idle_hours_per_day }}h/day · Disk {{ resource.disk_utilization_percent }}%</small></td><td class="cost">₹{{ resource.monthly_cost_inr | number:'1.0-0' }}</td><td><span class="status" [class.status-muted]="resource.status === 'Stopped'"><span></span>{{ resource.status }}</span></td></tr> }
+        </tbody></table></div>
+      </div>
+
+      <aside class="side-column">
+        <section class="agent-panel"><div class="panel-heading"><span class="spark">✦</span><div><p class="eyebrow">AI SUMMARY</p><h3>Plain-English explanation</h3></div><span class="source">{{ agentSummary()?.source }}</span></div><p>{{ agentSummary()?.summary }}</p><div class="agent-rule"></div><span class="panel-foot">This is a summary only. Any change still needs approval.</span></section>
+        <section class="recommendations-panel"><div class="section-heading compact"><div><p class="eyebrow accent">SUGGESTED ACTIONS</p><h3>Recommendations</h3></div><span class="section-count">Review window</span></div>
+          @if (pendingRecommendations().length === 0) {
+            <article class="recommendation recommendation-done">
+              <div class="recommendation-top"><span class="rec-id">NONE</span><span class="status-pill approved">Good</span></div>
+              <h4>No action needed right now</h4>
+              <p>Everything currently looks stable based on the latest health check.</p>
+            </article>
+          }
+          @for (recommendation of reviewRecommendations(); track recommendation.id) {
+            <article class="recommendation" [class.recommendation-done]="recommendation.status !== 'pending_approval'">
+              <div class="recommendation-top"><span class="rec-id">{{ recommendation.id }}</span><span class="status-pill" [class]="statusClass(recommendation.status)">{{ recommendation.status.replaceAll('_', ' ') }}</span></div>
+              <h4>{{ recommendation.resource_name }}</h4>
+              <p>{{ recommendation.action }}</p>
+              @if (recommendation.approval_deadline) { <p class="recommendation-timing"><strong>Started:</strong> {{ recommendationReceivedAt(recommendation) | date:'shortTime' }} <span>·</span> <strong>Review by:</strong> {{ recommendation.approval_deadline | date:'shortTime' }} <span>·</span> {{ recommendation.waiting_period_hours }} minute review window</p> }
+              @if (recommendation.status === 'approved') { <p class="planned-resize"><strong>Current size:</strong> {{ resourceForRecommendation(recommendation)?.vcpus }} vCPU / {{ resourceForRecommendation(recommendation)?.ram_gb }} GB RAM <br><strong>Planned change:</strong> {{ plannedVcpus(recommendation) }} vCPU / {{ plannedRam(recommendation) }} GB RAM</p> }
+              @if (recommendation.status === 'optimized') { <p class="planned-resize"><strong>Agent action complete:</strong> The VM now runs at {{ resourceForRecommendation(recommendation)?.vcpus }} vCPU / {{ resourceForRecommendation(recommendation)?.ram_gb }} GB RAM.</p> }
+              <div class="rec-bottom">
+                <strong>₹{{ recommendation.estimated_monthly_savings_inr | number:'1.0-0' }}<small>/ month</small></strong>
+                @if (recommendation.status === 'pending_approval') {
+                  <div class="decision-actions">
+                    <button type="button" class="reject" (click)="decide(recommendation, 'reject')" [disabled]="busyRecommendation() === recommendation.id">Reject</button>
+                    <button type="button" class="approve" (click)="decide(recommendation, 'approve')" [disabled]="busyRecommendation() === recommendation.id">Approve</button>
+                  </div>
+                }
+              </div>
+            </article>
+          }
+          @if (auditLogs().length) { <div class="audit-heading"><p class="eyebrow accent">RECENT ACTIVITY</p>@for (entry of auditLogs().slice(-3).reverse(); track entry.recommendation_id + entry.status) { <div class="audit-entry"><span class="audit-status"></span><div><strong>{{ entry.status.replaceAll('_', ' ') }}</strong><small>{{ entry.resource_id }}</small><button type="button" class="audit-details-button" (click)="toggleAuditDetails(entry.recommendation_id)">{{ expandedAuditEntry() === entry.recommendation_id ? 'Hide details' : 'View details' }}</button>@if (expandedAuditEntry() === entry.recommendation_id) { <small class="audit-details">{{ entry.message }}</small> }</div></div> }</div> }
+        </section>
+      </aside>
+    </section>
+  }
+</main>
